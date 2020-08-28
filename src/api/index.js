@@ -7,3 +7,17 @@ export const fetchData = query => {
         params: query
     });
 };
+
+export const getUserLists = () => {
+    return request({
+        url: '/user/list',
+        method: 'get',
+    });
+};
+
+export const getUser = (name) => {
+    return request({
+        url: `/user/${name}`,
+        method: 'get',
+    });
+};

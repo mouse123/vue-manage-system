@@ -21,19 +21,20 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm()">登录</el-button>
                 </div>
-                <p class="login-tips">Tips : 用户名和密码随便填。</p>
+                <!-- <p class="login-tips">Tips : 用户名和密码随便填。</p> -->
             </el-form>
         </div>
     </div>
 </template>
 
 <script>
+import { getUser } from '../../api/index';
 export default {
     data: function() {
         return {
             param: {
-                username: 'admin',
-                password: '123123',
+                username: 'coco',
+                password: '',
             },
             rules: {
                 username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -43,11 +44,16 @@ export default {
     },
     methods: {
         submitForm() {
-            this.$refs.login.validate(valid => {
+            this.$refs.login.validate(async (valid) => {
                 if (valid) {
-                    this.$message.success('登录成功');
-                    localStorage.setItem('ms_username', this.param.username);
-                    this.$router.push('/');
+                    let user = await getUser(this.param.username);
+                    if(user[0]){
+                        this.$message.success('登录成功');
+                        localStorage.setItem('ms_username', this.param.username);
+                        this.$router.push('/');
+                    }else{
+                        this.$message.error('请输入正确的账号和密码');
+                    }
                 } else {
                     this.$message.error('请输入账号和密码');
                     console.log('error submit!!');

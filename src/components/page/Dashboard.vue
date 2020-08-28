@@ -6,17 +6,17 @@
                     <div class="user-info">
                         <img src="../../assets/img/img.jpg" class="user-avator" alt />
                         <div class="user-info-cont">
-                            <div class="user-info-name">{{name}}</div>
-                            <div>{{role}}</div>
+                            <div class="user-info-name">{{user.name}}</div>
+                            <div>{{role[user.level]}}</div>
                         </div>
                     </div>
                     <div class="user-info-list">
                         上次登录时间：
-                        <span>2019-11-01</span>
+                        <span>{{user.login_time}}</span>
                     </div>
                     <div class="user-info-list">
                         上次登录地点：
-                        <span>东莞</span>
+                        <span>{{user.area}}</span>
                     </div>
                 </el-card>
                 <el-card shadow="hover" style="height:252px;">
@@ -112,11 +112,18 @@
 <script>
 import Schart from 'vue-schart';
 import bus from '../common/bus';
+import { getUser } from '../../api/index';
 export default {
     name: 'dashboard',
     data() {
         return {
             name: localStorage.getItem('ms_username'),
+            user: {},
+            role:{
+                0: "普通用户",
+                1: "管理员",
+                2: "超级管理员"
+            },
             todoList: [
                 {
                     title: '今天要修复100个bug',
@@ -222,14 +229,13 @@ export default {
         Schart
     },
     computed: {
-        role() {
-            return this.name === 'admin' ? '超级管理员' : '普通用户';
-        }
     },
-    // created() {
-    //     this.handleListener();
-    //     this.changeDate();
-    // },
+    async created() {
+        this.user = (await getUser(this.name))[0];
+        console.log("this.user",this.user)
+        // this.handleListener();
+        // this.changeDate();
+    },
     // activated() {
     //     this.handleListener();
     // },
